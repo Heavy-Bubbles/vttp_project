@@ -1,0 +1,67 @@
+<div class="container">
+    <form [formGroup]="servicesForm" (submit)="addService()">
+        <div class="mb-3">
+            <label for="services" class="form-label">List of Services:</label>
+            <input class="form-control" list="servicesList" id="services" placeholder="Type to search..." formControlName="serviceName">
+            <datalist id="servicesList">
+                <option *ngFor="let s of services" [value]="s.name"></option>
+            </datalist>
+            <div *ngIf="servicesForm.get('serviceName')?.hasError('itemNotFound')" class="error">
+                Invalid service!
+            </div>
+        </div>
+        <button type="submit" class="btn btn btn-primary" [disabled]="servicesForm.invalid">Add</button>
+    </form>
+</div>
+<div class="container">
+    <h3>List of Services Selected:</h3>
+    <table class="table table-striped" *ngIf="servicesSelected.length > 0">
+        <thead>
+            <tr>
+                <th scope="col">Id:</th>
+                <th scope="col">Name:</th>
+                <th scope="col">Duration(mins):</th>
+                <th scope="col">Price:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of servicesSelected">
+                <th scope="row">{{s.id}}</th>
+                <td>{{s.name}}</td>
+                <td>{{s.durationInMinutes}}</td>
+                <td>${{s.price}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="removeService(s)">X</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4 *ngIf="servicesSelected.length < 1">
+        <td>No services selected.</td>
+    </h4>
+</div>
+<div class="container">
+    <form [formGroup]="appointmentForm" (submit)="process()">
+        <div class="mb-3">
+            <label for="customer" class="form-label">Customer:</label>
+            <input class="form-control" list="customerList" placeholder="Type to search..." formControlName="customer">
+            <datalist id="customerList">
+                <option *ngFor="let c of customers" [value]="c.id">{{c.name}}</option>
+            </datalist>
+            <div *ngIf="appointmentForm.get('customer')?.hasError('itemNotFound')" class="error">
+                Invalid customer!
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="appointmentStart" class="form-label">Appointment Start:</label>
+            <input type="datetime-local" name="appointmentStart" formControlName="appointmentStart" class="form-control">
+            <div *ngIf="appointmentForm.get('appointmentStart')?.hasError('required')" class="error">
+                Appointment time is required!
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="appointmentForm.invalid" [disabled]="servicesSelected.length == 0">Submit</button>
+        <div *ngIf="servicesSelected.length == 0" class="error">
+            No services selected!
+        </div>
+    </form>
+</div>

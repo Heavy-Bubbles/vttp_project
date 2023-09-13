@@ -1,0 +1,37 @@
+<div class="container mt-5">
+    <h2>Appointment Details:</h2>
+    <table class="table custom-table custom-table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">Appointment Start:</th>
+                <td>{{ appointment.appointmentStart | date:'medium' }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Appointment End:</th>
+                <td>{{ appointment.appointmentEnd | date:'medium' }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Customer:</th>
+                <td>{{ customer.name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Services Booked:</th>
+                <td>
+                    <ul *ngFor="let s of services">
+                        <li>{{s}}</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" [routerLink]="['']">
+        Back
+    </button>
+    <button type="button" class="btn btn-success">
+        Send Reminder
+    </button>
+<div>
+
+        
+        
+        

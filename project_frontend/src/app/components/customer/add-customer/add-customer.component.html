@@ -1,0 +1,45 @@
+<h2>Add New Customer:</h2>
+    <form [formGroup]="customerForm" (submit)="process()">
+        <div class="mb-3">
+            <label for="customer_name" class="form-label">Customer Name:</label>
+            <input type="text" name="customer_name" formControlName="customer_name" class="form-control">
+            <div *ngIf="customerForm.get('customer_name')?.hasError('required')" class="error">
+                Customer name is required!
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="gender" class="form-label">Gender:</label>
+            <div class="form-check">
+                <input type="radio" value="M" class="form-check-input" id="M" formControlName="gender">
+                <label for="M" class="form-check-label">M</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" value="F" class="form-check-input" id="F" formControlName="gender">
+                <label for="F" class="form-check-label">F</label>
+            </div>
+            <div *ngIf="customerForm.get('gender')?.hasError('required')" class="error">
+                Gender is required!
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone:</label>
+            <input type="text" name="phone" formControlName="phone" class="form-control">
+            <div *ngIf="customerForm.get('phone')?.hasError('required')" class="error">
+                Phone number is required!
+            </div>
+            <div *ngIf="customerForm.get('phone')?.hasError('pattern')" class="error">
+                Invalid phone number!
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" name="email" formControlName="email">
+            <div *ngIf="customerForm.get('email')?.hasError('required')" class="error">
+                Email is required!
+            </div>
+            <div *ngIf="customerForm.get('email')?.hasError('email')" class="error">
+                Invalid email!
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Submit</button>
+    </form>

@@ -1,0 +1,33 @@
+    <h2>Customer List:</h2>
+    <form [formGroup]="searchForm" (submit)="search()">
+            <input type="text" class="form-control" placeholder="Search Customers..." name="search" formControlName="search">
+            <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid">Search</button>
+    </form>
+    <table class="table table-striped" *ngIf="customers.length > 0">
+        <thead>
+            <tr>
+                <th scope="col">Id:</th>
+                <th scope="col">Name:</th>
+                <th scope="col">Gender:</th>
+                <th scope="col">Phone:</th>
+                <th scope="col">Email:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let c of customers">
+                <th scope="row">{{c.id}}</th>
+                <td>{{c.name}}</td>
+                <td>{{c.gender}}</td>
+                <td>{{c.phone}}</td>
+                <td>{{c.email}}</td>
+                <td>
+                    <button class="btn btn-info" [routerLink]="['/edit-customer', c.id]">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h2 *ngIf="customers.length <= 0">
+        No Customers Found.
+    </h2>
+    <button class="btn btn-success" [routerLink]="['/add-customer']">Add Customer</button>
+

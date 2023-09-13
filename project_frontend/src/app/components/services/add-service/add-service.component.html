@@ -1,0 +1,30 @@
+<form [formGroup]="servicesForm" (submit)="process()">
+    <div class="mb-3">
+        <label for="service_name" class="form-label">Service Name:</label>
+        <input type="text" name="service_name" formControlName="service_name" class="form-control">
+        <div *ngIf="servicesForm.get('service_name')?.hasError('required')" class="error">
+            Service name is required!
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price($):</label>
+        <input type="number" name="price" formControlName="price" class="form-control">
+        <div *ngIf="servicesForm.get('price')?.hasError('required')" class="error">
+            Price is required!
+        </div>
+        <div *ngIf="servicesForm.get('price')?.hasError('min')" class="error">
+            Must be a minimum of $1!
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="duration" class="form-label">Duration(in mins):</label>
+        <input type="number" name="duration" formControlName="duration" class="form-control">
+        <div *ngIf="servicesForm.get('duration')?.hasError('required')" class="error">
+            Duration is required!
+        </div>
+        <div *ngIf="servicesForm.get('duration')?.hasError('min')" class="error">
+            Must be a minimum of 1 min!
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="servicesForm.invalid">Submit</button>
+</form>
