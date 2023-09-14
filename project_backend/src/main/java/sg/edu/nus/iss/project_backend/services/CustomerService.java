@@ -33,5 +33,9 @@ public class CustomerService {
     public List<Customer> search(String name){
         return customerRepo.search(name);
     }
+
+    public Customer getByAppointmentId(String id){
+        return customerRepo.getByAppointmentId(id);
+    }
     
 }

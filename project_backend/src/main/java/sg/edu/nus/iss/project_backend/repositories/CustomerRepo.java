@@ -20,6 +20,7 @@ public class CustomerRepo {
     private static final String INSERT = "insert into customer (name, gender, phone, email) values (?, ?, ?, ?)";
     private static final String UPDATE = "update customer set name = ?, gender = ?, phone = ?, email = ? where id = ?";
     private static final String SEARCH = "select * from customer where name like ?";
+    private static final String GET_BY_A_ID = "select customer.* from customer inner join appointment ON customer.id = appointment.customer_id where appointment.id = ?";
     
     public Customer getById(Integer id){
         return jdbcTemplate.queryForObject(GET_BY_ID, BeanPropertyRowMapper.newInstance(Customer.class), id);
@@ -46,5 +47,9 @@ public class CustomerRepo {
     public List<Customer> search(String name){
         String query = "%" + name + "%";
         return jdbcTemplate.query(SEARCH, BeanPropertyRowMapper.newInstance(Customer.class), query);
+    }
+
+    public Customer getByAppointmentId(String id){
+        return jdbcTemplate.queryForObject(GET_BY_A_ID, BeanPropertyRowMapper.newInstance(Customer.class), id);
     }
 }

@@ -1,10 +1,8 @@
 package sg.edu.nus.iss.project_backend.services;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sg.edu.nus.iss.project_backend.exceptions.ApiException;
 import sg.edu.nus.iss.project_backend.models.AppointmentDetails;
+import sg.edu.nus.iss.project_backend.models.Customer;
 import sg.edu.nus.iss.project_backend.models.Invoice;
 import sg.edu.nus.iss.project_backend.models.Services;
 import sg.edu.nus.iss.project_backend.repositories.InvoiceRepo;
@@ -37,6 +36,9 @@ public class InvoiceService {
     @Autowired
     private PDFRepo pdfRepo;
 
+    @Autowired
+    private CustomerService customerService;
+
     public List<Invoice> getAll(){
         return invoiceRepo.getAll();  
     }
@@ -45,16 +47,15 @@ public class InvoiceService {
     }
 
     @Transactional
-    public Boolean insert(String appointmentId) throws IOException{
+    public Boolean insert(String appointmentId){
+
+        try{
         Invoice invoice = new Invoice();
         invoice.setId(UUID.randomUUID().toString().substring(0, 8));
         invoice.setAppointmentId(appointmentId);
         invoice.setInvoiceDate(System.currentTimeMillis());
-        Optional<Double> amount = Optional.of(invoiceRepo.getAmountDue(appointmentId));
-        if (amount.isEmpty()){
-            throw new ApiException();
-        }
-        invoice.setAmountDue(amount.get());
+        Double amount = invoiceRepo.getAmountDue(appointmentId);
+        invoice.setAmountDue(amount);
         List<Services> services = new LinkedList<>();
         List<AppointmentDetails> apptDets = appointmentDetailsService.getByAppointmentId(appointmentId);
         for (AppointmentDetails a : apptDets){
@@ -62,11 +63,16 @@ public class InvoiceService {
             Services service = servicesService.getById(serviceId);
             services.add(service);
         }
+        Customer customer = customerService.getByAppointmentId(appointmentId);
         
-        InputStream is = pdfGenerator.generatePDF(invoice, services);
+        InputStream is = pdfGenerator.generatePDF(invoice, services, customer);
         String url = pdfRepo.uploadPdf(is);
         invoice.setUrl(url);
         return invoiceRepo.insert(invoice);
+        } catch (Exception ex){
+            throw new ApiException();
+        }
+        
     }
 
     public List<Invoice> getByAppointmentId(String id){

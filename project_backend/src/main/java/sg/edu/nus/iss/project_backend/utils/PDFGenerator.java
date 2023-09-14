@@ -22,13 +22,14 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import sg.edu.nus.iss.project_backend.models.Customer;
 import sg.edu.nus.iss.project_backend.models.Invoice;
 import sg.edu.nus.iss.project_backend.models.Services;
 
 @Service
 public class PDFGenerator {
     
-    public InputStream generatePDF(Invoice invoice, List<Services> services) throws IOException{
+    public InputStream generatePDF(Invoice invoice, List<Services> services, Customer customer) throws IOException{
         
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -57,6 +58,11 @@ public class PDFGenerator {
             invoiceDate.setAlignment(Paragraph.ALIGN_LEFT);
             document.add(invoiceDate);
 
+            String customerName = customer.getName();
+            Paragraph name = new Paragraph("Billed to: " + customerName, fontbody);
+            invoiceDate.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(name);
+
             Font fontthead = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
             fontthead.setSize(18);
             Paragraph thead = new Paragraph("Services Provided:", fontthead);
@@ -75,11 +81,11 @@ public class PDFGenerator {
             
             cell.setPhrase(new Phrase("Service ID:", fontHeader));
             table.addCell(cell);
-            cell.setPhrase(new Phrase("Service Name", fontHeader));
+            cell.setPhrase(new Phrase("Service Name:", fontHeader));
             table.addCell(cell);
-            cell.setPhrase(new Phrase("Duration(mins)", fontHeader));
+            cell.setPhrase(new Phrase("Duration(mins):", fontHeader));
             table.addCell(cell);
-            cell.setPhrase(new Phrase("Price", fontHeader));
+            cell.setPhrase(new Phrase("Price:", fontHeader));
             table.addCell(cell);
             
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
