@@ -16,12 +16,15 @@
             <tr *ngFor="let i of invoices">
                 <th scope="row">{{i.id}}</th>
                 <td>{{i.appointmentId}}</td>
-                <td>{{i.amountDue}}</td>
+                <td>{{i.amountDue | currency}}</td>
                 <td>{{i.invoiceDate | date}}</td>
                 <td>
-                    <a [href]="i.url">
+                    <a [href]="i.url" target="_blank">
                         <button class="btn btn-info" >View</button>
                     </a>               
+                </td>
+                <td>
+                    <button class="btn btn-warning" (click)="sendInvoice(i.id)">Send Invoice</button>
                 </td>
             </tr>
         </tbody>

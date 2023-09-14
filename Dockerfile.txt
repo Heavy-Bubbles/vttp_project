@@ -1,0 +1,58 @@
+FROM node:18 AS angbuilder
+
+WORKDIR /app
+
+COPY project_frontend/src src
+COPY project_frontend/angular.json .
+COPY project_frontend/package.json .
+COPY project_frontend/package-lock.json .
+COPY project_frontend/tsconfig.app.json .
+COPY project_frontend/tsconfig.json .
+COPY project_frontend/tsconfig.spec.json .
+
+# install angular cli
+RUN npm i -g @angular/cli
+# install packages
+RUN npm i
+# compile angular
+RUN ng build
+
+FROM maven:3-eclipse-temurin-20 AS mvnbuilder
+
+WORKDIR /app
+
+COPY project_backend/src src
+COPY project_backend/mvnw mvnw
+COPY project_backend/pom.xml .
+COPY --from=angbuilder /app/dist/project_frontend /app/src/main/resources/static/
+
+RUN mvn clean package -Dmaven.test.skip=true
+
+FROM openjdk:17-jdk-slim 
+
+WORKDIR /app
+
+COPY --from=mvnbuilder /app/target/upload-0.0.1-SNAPSHOT.jar app.jar
+
+ENV PORT=3000
+# set your keys here
+ENV S3_BUCKET_ENDPOINT
+ENV S3_BUCKET_REGION
+ENV S3_KEY_ACCESS
+ENV S3_KEY_SECRET
+ENV SPRING_DATASOURCE_PASSWORD
+ENV SPRING_DATASOURCE_URL
+ENV SPRING_DATASOURCE_USERNAME
+ENV SPRING_MAIL_HOST
+ENV SPRING_MAIL_PASSWORD
+ENV SPRING_MAIL_PORT
+ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH
+ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE
+ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED
+ENV SPRING_MAIL_PROPERTIES_MAIL_SSL_PROTOCOLS
+ENV SPRING_MAIL_PROPERTIES_MAIL_SSL_TRUST
+ENV SPRING_MAIL_USERNAME
+
+EXPOSE ${PORT}
+
+ENTRYPOINT SERVER_PORT=${PORT} java -jar /app/app.jar

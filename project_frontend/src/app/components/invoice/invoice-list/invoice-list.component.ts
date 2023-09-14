@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Invoice } from 'src/app/models';
+import { EmailService } from 'src/app/services/email.service';
 import { InvoiceService } from 'src/app/services/invoice.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class InvoiceListComponent implements OnInit, OnDestroy{
 
   invoiceSvc = inject(InvoiceService)
   fb = inject(FormBuilder)
+  emailSvc = inject(EmailService)
 
   invoices: Invoice[] = []
   searchForm!: FormGroup
@@ -47,5 +49,16 @@ export class InvoiceListComponent implements OnInit, OnDestroy{
         this.invoices = i
       }
     )
+  }
+
+  sendInvoice(id: string){
+    this.emailSvc.sendInvoice(id)
+    .then(result => { 
+      if(result.message == "failure"){
+        alert(result.message)
+        return
+      }
+      alert(result.message)
+    })  
   }
 }

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Appointment, AppointmentDetails, Customer, Services } from 'src/app/models';
 import { AppointmentService } from 'src/app/services/appointment.service';
 import { CustomerService } from 'src/app/services/customer.service';
+import { EmailService } from 'src/app/services/email.service';
 import { ServicesService } from 'src/app/services/services.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class AppointmentDetailsComponent implements OnInit, OnDestroy{
   appointmentSvc = inject(AppointmentService)
   customerSvc = inject(CustomerService)
   servicesSvc = inject(ServicesService)
+  emailSvc = inject(EmailService)
   activatedRoute = inject(ActivatedRoute)
 
   services: string[] = []
@@ -53,5 +55,16 @@ export class AppointmentDetailsComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.apptDetsSub$.unsubscribe()
+  }
+
+  sendReminder(){
+    this.emailSvc.sendAppointment(this.id)
+    .then(result => { 
+      if(result.message == "failure"){
+        alert(result.message)
+        return
+      }
+      alert(result.message)
+    })    
   }
 }

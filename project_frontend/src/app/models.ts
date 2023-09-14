@@ -32,7 +32,7 @@ export interface AppointmentDetails{
 }
 
 export interface Invoice{
-    id: number
+    id: string
     appointmentId: string
     amountDue: number
     invoiceDate: number

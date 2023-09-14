@@ -12,7 +12,7 @@ create table services (
 
 create table customer (
 	id int not null auto_increment,
-    customer_name varchar(100),
+    name varchar(100),
     gender enum('F', 'M'),
     phone char(8),
     email varchar(100),
@@ -39,7 +39,7 @@ create table appointment_details (
 );
 
 create table invoice (
-	id int not null auto_increment,
+	id char(8) not null,
     appointment_id char(8),
     amount_due decimal(8,2),
     invoice_date bigint,

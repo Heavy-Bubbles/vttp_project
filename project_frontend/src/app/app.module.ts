@@ -19,6 +19,11 @@ import { AddAppointmentComponent } from './components/appointment/add-appointmen
 import { AppointmentService } from './services/appointment.service';
 import { AppointmentDetailsComponent } from './components/appointment/appointment-details/appointment-details.component';
 import { InvoiceListComponent } from './components/invoice/invoice-list/invoice-list.component';
+import { InvoiceService } from './services/invoice.service';
+import { EmailService } from './services/email.service';
+import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { UserComponent } from './components/user/user/user.component';
 
 const appRoutes: Routes = [
 
@@ -31,7 +36,8 @@ const appRoutes: Routes = [
   { path: 'services-list', component: ServicesListComponent },
   { path: 'add-services', component: AddServiceComponent },
   { path: 'edit-services/:id', component: EditServiceComponent },
-  { path: 'invoice-list', component: InvoiceListComponent }
+  { path: 'invoice-list', component: InvoiceListComponent },
+  { path: 'user', component: UserComponent }
 ]
 
 @NgModule({
@@ -45,15 +51,17 @@ const appRoutes: Routes = [
     EditServiceComponent,
     AppointmentListComponent,
     AddAppointmentComponent,
-
     AppointmentDetailsComponent,
-    InvoiceListComponent
+    InvoiceListComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes, { useHash: true }),
     ReactiveFormsModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -63,7 +71,26 @@ const appRoutes: Routes = [
   ],
   providers: [CustomerService,
               ServicesService,
-              AppointmentService],
+              AppointmentService,
+              InvoiceService,
+              EmailService,
+              {
+                provide: 'SocialAuthServiceConfig',
+                useValue: {
+                  autoLogin: false,
+                  providers: [
+                    {
+                      id: GoogleLoginProvider.PROVIDER_ID,
+                      provider: new GoogleLoginProvider(
+                        '856660676844-qr3sb6e1p79okrrdo9bnfujh6ocjq5ps.apps.googleusercontent.com'
+                      )
+                    }
+                  ],
+                  onError: (err) => {
+                    console.error(err);
+                  }
+                } as SocialAuthServiceConfig,
+              }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

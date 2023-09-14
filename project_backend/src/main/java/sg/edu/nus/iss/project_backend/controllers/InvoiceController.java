@@ -5,7 +5,7 @@ import static sg.edu.nus.iss.project_backend.utils.Constants.INVOICE;
 import static sg.edu.nus.iss.project_backend.utils.Constants.INSERT;
 import static sg.edu.nus.iss.project_backend.utils.Constants.SEARCH;
 
-
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class InvoiceController {
     }
 
     @PostMapping(INSERT) 
-    public ResponseEntity<String> insert(@RequestBody String appointmentId){
+    public ResponseEntity<String> insert(@RequestBody String appointmentId) throws IOException{
         Boolean success = invoiceService.insert(appointmentId);
 
         if (success){

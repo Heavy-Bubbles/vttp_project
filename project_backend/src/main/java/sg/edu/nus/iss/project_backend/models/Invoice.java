@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Invoice {
 
-    private Integer id;
+    private String id;
     private String appointmentId;
     private Double amountDue;
     private Long invoiceDate;
